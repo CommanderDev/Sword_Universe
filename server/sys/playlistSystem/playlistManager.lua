@@ -22,7 +22,7 @@ function CreatePlaylistData()
     local data = 
     {
         ["Casual"] = {};
-        ["Competitve"] = {};
+        ["Competitive"] = {};
         ["Extras"] = {}
     }
     return data 
@@ -32,7 +32,7 @@ local playlistClasses = CreatePlaylistData()
 
 function CreatePlaylistClasses()
     local casual = playlistClasses["Casual"]
-    local competitve = playlistClasses["Competitve"]
+    local competitive = playlistClasses["Competitive"]
     local extras = playlistClasses["Extras"]
 
     ---[[ Rules for each mode ]]---
@@ -45,7 +45,8 @@ function CreatePlaylistClasses()
     casual["2v2"] = playlistClass.new(twoRules)
     casual["3v3"] = playlistClass.new(threeRules)
     casual["4v4"] = playlistClass.new(fourRules)
-
+    oneRules.modeType = "Competitive"
+    competitive["1v1"] = oneRules
 end 
 
 function isDefaultData(): boolean
