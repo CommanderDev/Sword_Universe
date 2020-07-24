@@ -1,0 +1,3 @@
+local playlistManager = {}
+
+return playlistManager 
