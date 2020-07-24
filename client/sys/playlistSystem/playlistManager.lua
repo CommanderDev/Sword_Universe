@@ -19,8 +19,11 @@ type playlistType = string
 
 function CreatePlaylists(typeOfPlaylist: playlistType)
     print(playlistsData)
+    local newList = listTemplate:Clone()
+    newList.Parent = playscreenFrame 
+    
    for index, playlist in next, playlistsData[typeOfPlaylist] do
-        print(playlist.mode)
+        
     end 
 end 
 
