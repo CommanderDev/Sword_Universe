@@ -8,6 +8,8 @@ local playerGui = player:WaitForChild("PlayerGui")
 local mainUI = playerGui:WaitForChild("mainUI")
 local playscreenFrame = mainUI:WaitForChild("playscreenFrame")
 
+---[[ Lower Tabs Frame ]]---
+local lowerTabsFrame = playscreenFrame:WaitForChild("lowerTabsFrame")
 local uiComponents = game.ReplicatedStorage:WaitForChild("uiComponents")
 local listTemplate = uiComponents:WaitForChild("listTemplate")
 local playlistTemplate = uiComponents:WaitForChild("playlistTemplate")
@@ -30,13 +32,25 @@ function CreatePlaylists(typeOfPlaylist: playlistType)
     else
         newList.Visible = false
     end 
+   playlistSelections[typeOfPlaylist] = {} --Adds a table to the type of playlist desired.
    for index, playlist in next, playlistsData[typeOfPlaylist] do
         local newPlaylist = playlistTemplate:Clone()
         local modeLabel = newPlaylist:WaitForChild("modeLabel")
         modeLabel.Text = playlist.mode
         newPlaylist.Name = playlist.mode
         newPlaylist.Parent = newList 
-    end 
+        local checkmark = newPlaylist:WaitForChild("checkmarkLabel")
+        playlistSelections[typeOfPlaylist][playlist.mode] = false
+        newPlaylist.MouseButton1Click:Connect(function()
+            if(not playlistSelections[typeOfPlaylist][playlist.mode]) then 
+                playlistSelections[typeOfPlaylist][playlist.mode] = true
+                checkmark.Visible = true
+            else
+                playlistSelections[typeOfPlaylist][playlist.mode] = false
+                checkmark.Visible = false
+            end
+        end)
+    end
 end 
 
 function playlistManager:connect()
