@@ -1,0 +1,87 @@
+{
+  "name": "Rome",
+  "tree": {
+    "$className": "DataModel",
+    "HttpService": {
+      "$className": "HttpService",
+      "$properties": {
+        "HttpEnabled": true
+      }
+    },
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Brightness": 2,
+        "Outlines": false,
+        "Technology": "Voxel",
+        "GlobalShadows": true,
+        "Ambient": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Source": {
+        "$path": "src"
+      },
+      "util": {
+        "$path": "utility/util.lua",
+        "Network": {
+          "$path": "utility/Network.lua"
+        },
+        "get": {
+          "$path": "utility/get.lua"
+        },
+        "Event": {
+          "$path": "utility/Event.lua",
+          "EventSignal": {
+            "$path": "utility/EventSignal.lua"
+          }
+        }
+      }
+    },
+    "Workspace": {
+      "$className": "Workspace",
+      "$properties": {
+        "FilteringEnabled": true
+      },
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Size": [
+            512,
+            20,
+            512
+          ],
+          "Color": [
+            0.38823,
+            0.37254,
+            0.38823
+          ],
+          "Locked": true,
+          "Position": [
+            0,
+            -10,
+            0
+          ],
+          "Anchored": true
+        }
+      }
+    },
+    "ReplicatedFirst": {
+      "$className": "ReplicatedFirst",
+      "client": {
+        "$path": "client"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "server": {
+        "$path": "server"
+      }
+    }
+  }
+}
