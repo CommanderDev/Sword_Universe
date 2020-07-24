@@ -86,6 +86,11 @@ function playlistManager:connect()
         print(errorMessage)
         CreatePlaylistClasses()
     end 
+
+    _G.network:setCallback("Get Playlist Data", function()
+        print("Getting playlistData")
+        return playlistClasses
+    end)
 end 
 
 function playlistManager:init()
