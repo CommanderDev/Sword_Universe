@@ -14,15 +14,21 @@ local playlistTemplate = uiComponents:WaitForChild("playlistTemplate")
 ---[[ Declarations ]]---
 local playlistsData
 
+local selectedModeType = "Casual" --Determines which frame is shown.
 ---[[ Types ]]---
 type playlistType = string
+
 
 function CreatePlaylists(typeOfPlaylist: playlistType)
     print(playlistsData)
     local newList = listTemplate:Clone()
     newList.Parent = playscreenFrame 
     newList.Name = typeOfPlaylist
-
+    if(typeOfPlaylist == selectedModeType) then 
+        newList.Visible = true 
+    else
+        newList.Visible = false
+    end 
    for index, playlist in next, playlistsData[typeOfPlaylist] do
         local newPlaylist = playlistTemplate:Clone()
         local modeLabel = newPlaylist:WaitForChild("modeLabel")
@@ -35,6 +41,7 @@ end
 function playlistManager:connect()
     playlistsData = _G.network:invokeServer("Get Playlist Data")
     CreatePlaylists("Casual")
+    CreatePlaylists("Competitive")
 end 
 
 function playlistManager:init()
