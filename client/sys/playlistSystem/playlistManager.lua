@@ -18,6 +18,7 @@ local selectedModeType = "Casual" --Determines which frame is shown.
 ---[[ Types ]]---
 type playlistType = string
 
+local playlistSelections = {} --Holds data for which playlists in each tab are selected.
 
 function CreatePlaylists(typeOfPlaylist: playlistType)
     print(playlistsData)
