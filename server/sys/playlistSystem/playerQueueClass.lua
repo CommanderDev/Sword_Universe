@@ -1,6 +1,9 @@
 ---Note: This handles every player that joins the queue and the search for a game as well. This is meant to mainly communicate through playlistClass
----[[ Dependencies ]]---
 
+---[[ Services ]]---
+local MessagingService = game:GetService("MessagingService")
+
+---[[ Dependencies ]]---
 local matchmakingData = _G.get "data/matchmakingData"
 
 local DataStore2 = _G.get "DataStore2"
@@ -13,10 +16,6 @@ function playerQueueClass.new(playerObject, playlistClass)
     coroutine.wrap(function()
         self.playerObject = playerObject
         self.playlistClass = playlistClass
-        self.playerStore = DataStore2("PlayerStore", playerObject)
-        self.playerSaves = self.playerStore:Get()
-        self.skillRating = self.playerSaves["Skill Rating"]
-        print(self.skillRating.." is the amount of SR "..playerObject.Name.." has!")
         self.skillgapRadius = matchmakingData["minimumSkillGap"]
         self.eligiblePlayers = {self} --The players eligible to queue
         self.foundMatch = false
@@ -27,21 +26,33 @@ end
 function playerQueueClass:SearchForPlayers()
     self.eligiblePlayers = {[1] = self}
     print("Searching for a match The skill gap radius is "..self.skillgapRadius)
-    for index, playerClass in next, self.playlistClass.playersInQueue do 
-        if(playerClass) then 
-            if(self.playerObject ~= playerClass.playerObject) then 
-                print(self.skillRating-playerClass.skillRating)
-                print(0-self.skillRating+playerClass.skillRating)
+    local playersInMatch = {} --Only used if a match is found. Makes it so all the players are added to the match array accordingly.
+    for index, playerClass in next, self.playlistClass.playersInQueue do
+        if(typeof(playerClass) == "table" and playerClass.playerObject) then 
+            if(self.playerObject ~= playerClass.playerObject and playerClass.skillRating) then 
                 if(self.skillRating-playerClass.skillRating <= self.skillgapRadius and 0-self.skillRating+playerClass.skillRating <= 0-self.skillgapRadius) then 
+                    print("Amount required reached!")
                     table.insert(self.eligiblePlayers, playerClass)
+                    local actualPlayers = 0 --Check so it knows they are actual players.
                     if(#self.eligiblePlayers >= self.playlistClass.minimumPlayers) then --Check so the amount of eligible players has the amount required to have a full match.  
-                        for index = 1, self.playlistClass.maximumPlayers do --Loops from the first index found eligible to the maximumPlayers.
+                        --for index = 1, self.playlistClass.maximumPlayers do --Loops from the first index found eligible to the maximumPlayers.
+                          table.foreach(self.eligiblePlayers, function(index, desiredClass)
                             print(index)
                             local desiredClass = self.eligiblePlayers[index] --Gets the current indexed player's class
-                            print(desiredClass.playerObject)
-                            if(desiredClass) then 
+                            if(desiredClass and desiredClass.playerObject) then 
                                 desiredClass:MatchFound()
+                                table.insert(playersInMatch, self.playerObject)
+                                actualPlayers += 1
                             end
+                        end)
+                        if(actualPlayers >= self.playlistClass.minimumPlayers) then 
+                            local data = 
+                            {
+                                ["Topic"] = self.playlistClass.modeType.." "..self.playlistClass.mode.." Match Begun";
+                                ["Players In Match"] = playersInMatch
+                            }
+                            print(data)
+                            MessagingService:PublishAsync("Server Message",data)
                         end
                     end
                 end
@@ -57,7 +68,12 @@ function playerQueueClass:MatchFound()
 end
 
 function playerQueueClass:HandlePlayerQueue()
+    self.playerObject = game.Players:FindFirstChild(self.playerObject)
+    self.playerStore = DataStore2("PlayerStore", self.playerObject)
+    self.playerSaves = self.playerStore:Get()
+    self.skillRating = self.playerSaves["Skill Rating"]
     coroutine.wrap(function()
+        print("About to search for match")
         local foundMatch = self:SearchForPlayers()
         if(self.foundMatch) then 
             return
