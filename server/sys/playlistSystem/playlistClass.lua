@@ -13,16 +13,17 @@ function playlistClass.new(playlistRules)
         for index, rule in next, playlistRules do
             self[index] = rule
         end
-        print(self.mode)
         self.playersInQueue = {}
     end)()
     return self
 end 
 
 function playlistClass:AddPlayerToQueue(playerObject)
-    local newPlayerQueue = playerQueueClass.new(playerObject, self)
-    self.playersInQueue[playerObject] = newPlayerQueue 
-    newPlayerQueue:HandlePlayerQueue()
+    if(not self.playersInQueue[playerObject]) then 
+        local newPlayerQueue = playerQueueClass.new(playerObject, self)
+        self.playersInQueue[playerObject] = newPlayerQueue 
+        newPlayerQueue:HandlePlayerQueue()
+    end
 end 
 
 
