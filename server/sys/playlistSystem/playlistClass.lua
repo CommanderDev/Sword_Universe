@@ -3,6 +3,8 @@ local MessagingService = game:GetService("MessagingService")
 ---[[ Dependencies ]]---
 local playerQueueClass = _G.get "sys/playlistSystem/playerQueueClass"
 
+local DataStore2 = _G.get "DataStore2"
+
 local playlistClass = {}
 playlistClass.__index = playlistClass 
 
@@ -31,14 +33,15 @@ function playlistClass:HandleMessaging()
             end
         end)
     end)]]
-        self.playlistManager.topicFunctions[self.modeType.." "..self.mode.." Match Begun"] = function(playersInMatch)
+        self.playlistManager.topicFunctions[self.modeType.." "..self.mode.." Match Begun"] = function(data)
+            local playersInMatch = data["Players In Match"]
             for index, value in next, playersInMatch do 
-                print(value)
+                print(value.." ssuccessfully joined the match!")
             end
         end
         self.playlistManager.topicFunctions[self.modeType.." "..self.mode.." Player Added to queue"] = function(data)
             print(data.playerObject.." added to the queue!")
-            local newPlayerQueue = playerQueueClass.new(data.playerObject, self)
+            local newPlayerQueue = playerQueueClass.new(data.playerObject, data.skillRating, self)
             self.playersInQueue[data.playerObject] = newPlayerQueue
         if(game.Players:FindFirstChild(data.playerObject)) then 
             data.playerObject = game.Players:FindFirstChild(data.playerObject)
@@ -53,12 +56,15 @@ function playlistClass:HandleMessaging()
 end 
 
 function playlistClass:AddPlayerToQueue(playerObject)
-    if(not self.playersInQueue[playerObject]) then 
+    if(not self.playersInQueue[playerObject.Name]) then 
      --   local newPlayerQueue = playerQueueClass.new(playerObject, self)
+        local playerStore = DataStore2("PlayerStore", playerObject)
+        local playerSaves = playerStore:Get()
         local data =
         {
             Topic = self.modeType.." "..self.mode.." Player Added to queue";
-            playerObject = playerObject.Name
+            playerObject = playerObject.Name;
+            skillRating = playerSaves["Skill Rating"]
         }
         print("Publishing data!")
         MessagingService:PublishAsync("Server Message", data)
