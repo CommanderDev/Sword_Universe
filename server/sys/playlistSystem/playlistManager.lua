@@ -30,6 +30,7 @@ end
 
 local playlistClasses = CreatePlaylistData()
 
+
 function CreatePlaylistClasses()
     local casual = playlistClasses["Casual"]
     local competitive = playlistClasses["Competitive"]
@@ -95,6 +96,16 @@ function playlistManager:connect()
         CreatePlaylistClasses()
     end 
 
+
+    ---[[ Events ]]---
+    _G.network:createEventListener("Queue Player", function(playerObject, modeType, playlistsToQueue)
+        for index, value in next, playlistsToQueue do
+            local class = playlistClasses[modeType][index]
+            print(class)
+            class:AddPlayerToQueue(playerObject)
+        end
+    end)
+    ---[[ Functions ]]---
     _G.network:setCallback("Get Playlist Data", function()
         return playlistClasses
     end)
