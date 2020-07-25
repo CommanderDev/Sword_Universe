@@ -4,6 +4,8 @@ local MessagingService = game:GetService("MessagingService")
 ---[[ Dependencies ]]---
 local playlistClass = _G.get "sys/playlistSystem/playlistClass"
 
+local servermessagingManager = _G.get "sys/servermessagingSystem/servermessagingManager"
+
 local rulesData = _G.get "data/rulesData"
 
 local playlistManager = {}
@@ -92,6 +94,17 @@ playlistManager.topicFunctions["Get Playlist Data"] = function(data)
 end
 
 function playlistManager:connect() 
+    print(servermessagingManager)
+    servermessagingManager:SubscribeTopic("Test Topic", function(data)
+        print(data.stringToPrint)
+        print("Topic sucessfully subscribed!")
+    end)
+    local testTopicData =
+    {
+        Topic = "Test Topic";
+        stringToPrint = "Ayy!!"
+    }
+    servermessagingManager:PublishData(testTopicData)
     local success, errorMessage = pcall(function()
     MessagingService:SubscribeAsync("Server Message", function(data)
         data = data.Data
