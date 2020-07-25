@@ -1,7 +1,7 @@
 ---Note: This handles every player that joins the queue and the search for a game as well. This is meant to mainly communicate through playlistClass
 
 ---[[ Services ]]---
-local MessagingService = game:GetService("MessagingService")
+local servermessagingManager = _G.get "sys/servermessagingSystem/servermessagingManager"
 
 ---[[ Dependencies ]]---
 local matchmakingData = _G.get "data/matchmakingData"
@@ -32,12 +32,7 @@ function playerQueueClass:SearchForPlayers()
         if(typeof(playerClass) == "table" and playerClass.playerObject) then 
             print(playerClass.skillRating)
             if(self.playerObject ~= playerClass.playerObject and playerClass.skillRating) then 
-                print(index)
-                print(self.skillRating+playerClass.skillRating)
                 if(self.skillgapRadius < self.skillRating - playerClass.skillRating and self.skillgapRadius < self.skillRating+playerClass.skillRating) then return end
-               -- if(self.skillRating-playerClass.skillRating > self.skillgapRadius or 0-self.skillRating+playerClass.skillRating > 0-self.skillgapRadius) then return end 
-                --if(self.skillRating-playerClass.skillRating <= self.skillgapRadius and 0-self.skillRating+playerClass.skillRating <= 0-self.skillgapRadius) then 
-                    print("Amount required reached!")
                     table.insert(self.eligiblePlayers, playerClass)
                     local actualPlayers = 0 --Check so it knows they are actual players.
                     if(#self.eligiblePlayers >= self.playlistClass.minimumPlayers) then --Check so the amount of eligible players has the amount required to have a full match.  
@@ -58,8 +53,8 @@ function playerQueueClass:SearchForPlayers()
                                 ["Topic"] = self.playlistClass.modeType.." "..self.playlistClass.mode.." Match Begun";
                                 ["Players In Match"] = playersInMatch
                             }
-                            print(data)
-                            MessagingService:PublishAsync("Server Message",data)
+                            servermessagingManager:PublishData(self.playlistClass.matchBegunTopic, data)
+                           -- MessagingService:PublishAsync("Server Message",data)
                         end
                     end
                -- end
