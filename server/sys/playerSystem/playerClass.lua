@@ -21,7 +21,6 @@ function playerClass.new(playerObject)
     self.playerObject = playerObject
     self.playerStore = DataStore2("PlayerStore", playerObject)
     self.playerSaves = self.playerStore:Get(defaultPlayerData)
-    print(self.playerSaves["Skill Rating"].." is the amount of SR "..playerObject.Name.." has!")
     self:HandlePlayerEvents()
     return self
 end 
