@@ -67,17 +67,6 @@ end
 ---[[ Topic Functions]]---
 
 function playlistManager:connect() 
-    print(servermessagingManager)
-    servermessagingManager:SubscribeTopic("Test Topic", function(data)
-        print(data.stringToPrint)
-        print("Topic sucessfully subscribed!")
-    end)
-    local testTopicData =
-    {
-        Topic = "Test Topic";
-        stringToPrint = "Ayy!!"
-    }
-    servermessagingManager:PublishData(testTopicData)
     local success, errorMessage = pcall(function()
         servermessagingManager:SubscribeTopic("Get Playlist Data", function(playlistData)
             local data = --The data that'll be published to the servers
