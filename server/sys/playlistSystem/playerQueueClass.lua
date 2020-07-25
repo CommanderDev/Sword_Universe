@@ -14,15 +14,14 @@ function playerQueueClass.new(playerObject, playlistClass)
 end 
 
 function playerQueueClass:SearchForPlayers()
-    self.eligiblePlayers = {self}
+    self.eligiblePlayers = {}
     for index, playerClass in next, self.playlistClass.playersInQueue do 
-        if(playerClass and playerClass.playerObject ~= self.playerObject) then 
+        if(playerClass) then 
             table.insert(self.eligiblePlayers, playerClass)
             if(#self.eligiblePlayers >= self.playlistClass.minimumPlayers) then 
                 for index = 1, self.playlistClass.maximumPlayers do --Loops from the first index found eligible to the maximumPlayers.
                     local desiredClass = self.eligiblePlayers[index] --Gets player's class
-                    print(desiredClass) 
-                    print(self.playerObject.Name)
+                    print(playerClass.playerObject.Name)
                     if(desiredClass) then 
                         desiredClass:MatchFound()
                     end
