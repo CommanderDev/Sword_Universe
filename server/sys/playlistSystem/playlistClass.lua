@@ -9,11 +9,13 @@ local rulesData = _G.get "data/rulesData"
 local rules = rulesData.rules
 function playlistClass.new(playlistRules)
     local self = setmetatable({}, playlistClass)
-    for index, rule in next, playlistRules do
-        self[index] = rule
-    end
-    print(self.mode)
-    self.playersInQueue = {}
+    coroutine.wrap(function()
+        for index, rule in next, playlistRules do
+            self[index] = rule
+        end
+        print(self.mode)
+        self.playersInQueue = {}
+    end)()
     return self
 end 
 
