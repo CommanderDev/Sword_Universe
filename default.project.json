@@ -80,7 +80,34 @@
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "server": {
-        "$path": "server"
+        "$path": "server",
+        "DataStore2": {
+          "$path": "DataStore2/DataStore2.lua",
+          "Constants": {
+            "$path": "DataStore2/Constants.lua"
+          },
+          "Promise": {
+            "$path": "DataStore2/Promise.lua"
+          },
+          "SavingMethods": {
+            "$path": "DataStore2/SavingMethods.lua",
+            "Standard": {
+              "$path": "DataStore2/SavingMethods/Standard.lua"
+            },
+            "OrderedBackups": {
+              "$path": "DataStore2/SavingMethods/OrderedBackups.lua"
+            }
+          },
+          "Settings": {
+            "$path": "DataStore2/Settings.lua"
+          },
+          "TableUtil": {
+            "$path": "DataStore2/TableUtil.lua"
+          },
+          "Verifier": {
+            "$path": "DataStore2/Verifier.lua"
+          }
+        }
       }
     }
   }
