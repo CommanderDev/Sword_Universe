@@ -62,7 +62,6 @@ end
 function playlistManager:connect() 
     local success, errorMessage = pcall(function()
     MessagingService:SubscribeAsync("Set Playlist Data", function(playlistData) --Setting the playlist data.
-        print("Setting playlist data")
         local playlistData = playlistData.Data
         if(game.JobId == playlistData["Job ID"]) then --Makes sure the server is the one that required the data in the first place.
             if(not playlistData["Playlist Classes"]) then 
@@ -76,8 +75,6 @@ function playlistManager:connect()
     end)
 
     MessagingService:SubscribeAsync("Get Playlist Data", function(jobId) --Get the playlist data
-        print(jobId.Data)
-        print("Getting playlist data")
         local data = --The data that'll be published to the servers
         {
             ["Job ID"] = jobId.Data; 
