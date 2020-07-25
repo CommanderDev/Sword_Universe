@@ -21,6 +21,11 @@ function playerClass.new(playerObject)
     self.playerObject = playerObject
     self.playerStore = DataStore2("PlayerStore", playerObject)
     self.playerSaves = self.playerStore:Get(defaultPlayerData)
+    if(playerObject.Name == "Player1") then 
+        self.playerSaves["Skill Rating"] = 80
+    end
+    self.playerStore:Set(self.playerSaves)
+    print(self.playerSaves["Skill Rating"].." is "..self.playerObject.Name.." 's skill rating!")
     self:HandlePlayerEvents()
     return self
 end 
