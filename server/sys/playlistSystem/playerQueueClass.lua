@@ -20,7 +20,7 @@ function playerQueueClass:SearchForPlayers()
             table.insert(self.eligiblePlayers, playerClass)
             if(#self.eligiblePlayers >= self.playlistClass.minimumPlayers) then 
                 for index = 1, self.playlistClass.maximumPlayers do --Loops from the first index found eligible to the maximumPlayers.
-                    local desiredClass = self.eligiblePlayers[index] --Gets player's class
+                    local desiredClass = self.eligiblePlayers[index] --Gets the current indexed player's class
                     print(playerClass.playerObject.Name)
                     if(desiredClass) then 
                         desiredClass:MatchFound()
@@ -36,7 +36,12 @@ function playerQueueClass:MatchFound()
 end
 
 function playerQueueClass:HandlePlayerQueue()
-    self:SearchForPlayers()
+    coroutine.wrap(function()
+        self:SearchForPlayers()
+        while wait(1) do --Cooldown for each check.
+            self:SearchForPlayers()
+        end
+    end)()
 end
 
 
