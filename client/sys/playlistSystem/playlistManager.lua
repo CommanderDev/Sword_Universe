@@ -9,12 +9,14 @@ local mainUI = playerGui:WaitForChild("mainUI")
 local playscreenFrame = mainUI:WaitForChild("playscreenFrame")
 
 ---[[ Lower Tabs Frame ]]---
-local lowerTabsFrame = playscreenFrame:WaitForChild("lowerTabsFrame")
-local findmatchButton = lowerTabsFrame:WaitForChild("findmatchButton")
+local findmatchButton = playscreenFrame:WaitForChild("findmatchButton")
+local tabsFolder = playscreenFrame:WaitForChild("tabsFolder")
 
 local uiComponents = game.ReplicatedStorage:WaitForChild("uiComponents")
 local listTemplate = uiComponents:WaitForChild("listTemplate")
-local playlistTemplate = uiComponents:WaitForChild("playlistTemplate")
+local playlistTemplates = uiComponents:WaitForChild("playlistTemplates")
+
+
 ---[[ Declarations ]]---
 local playlistsData
 
@@ -35,14 +37,17 @@ function CreatePlaylists(typeOfPlaylist: playlistType)
     end 
    playlistSelections[typeOfPlaylist] = {} --Adds a table to the type of playlist desired.
    for index, playlist in next, playlistsData[typeOfPlaylist] do
-        local newPlaylist = playlistTemplate:Clone()
-        local modeLabel = newPlaylist:WaitForChild("modeLabel")
-        modeLabel.Text = playlist.mode
-        newPlaylist.Name = playlist.mode
-        newPlaylist.Parent = newList 
-        local checkmark = newPlaylist:WaitForChild("checkmarkLabel")
+        print(index)
+        local desiredPlaylist = playlistTemplates:FindFirstChild(index.."Playlist"):Clone()
+
+       -- local newPlaylist = playlistTemplate:Clone()
+        --local modeLabel = desiredPlaylist:WaitForChild("modeLabel")
+       -- modeLabel.Text = playlist.mode
+        desiredPlaylist.Name = playlist.mode
+        desiredPlaylist.Parent = newList 
+        local checkmark = desiredPlaylist:WaitForChild("checkmarkLabel")
         playlistSelections[typeOfPlaylist][playlist.mode] = false
-        newPlaylist.MouseButton1Click:Connect(function()
+        desiredPlaylist.MouseButton1Click:Connect(function()
             if(not playlistSelections[typeOfPlaylist][playlist.mode]) then 
                 playlistSelections[typeOfPlaylist][playlist.mode] = true
                 checkmark.Visible = true
@@ -54,11 +59,33 @@ function CreatePlaylists(typeOfPlaylist: playlistType)
     end
 end 
 
+function tabSelected(tabObject)
+    print(tabButton.Name.." se;ected!")
+end 
+
+function tabUnselected(tabObject) 
+    print(tabButton.Name.." unse;ected!")
+end 
+
+function HandleTabs() --Handles the tabs for playlists.
+    for index, tabButton in next, tabsFolder:GetChildren() do 
+        local start, finish = string.find(tabButton.Name, "Button") --Finds he button so the client can find the playlist type assigned to the button.
+        if(start) then 
+            local modeType = string.sub(tabButton.Name, 1, start-1)
+            if(modeType == selectedModeType) then 
+                tabSelected(tabButton)
+            else 
+                tabUnselected(tabBUtton)
+            end
+        end
+    end 
+end 
+
 function playlistManager:connect()
     playlistsData = _G.network:invokeServer("Get Playlist Data")
     CreatePlaylists("Casual")
     CreatePlaylists("Competitive")
-
+    HandleTabs()
     findmatchButton.MouseButton1Click:Connect(function()
         local selectedPlaylistSelections = playlistSelections[selectedModeType]
         local selectedPlaylists = {}
