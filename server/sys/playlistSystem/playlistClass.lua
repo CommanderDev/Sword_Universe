@@ -32,14 +32,6 @@ end
 
 function playlistClass:HandleMessaging()
     local success, errorMessage = pcall(function()
-
-        --[[self.playlistManager.topicFunctions[self.modeType.." "..self.mode.." Match Begun"] = function(data)
-            local playersInMatch = data["Players In Match"]
-            for index, value in next, playersInMatch do 
-                print(value.." ssuccessfully joined the match!")
-            end
-        end
-        ]]
         servermessagingManager:SubscribeTopic(self.matchBegunTopic, function(data)
             local playersInMatch = data["Players In Match"]
             for index, value in next, playersInMatch do 
@@ -57,18 +49,6 @@ function playlistClass:HandleMessaging()
                 end
             end)
         end)
-       --[[ self.playlistManager.topicFunctions[self.modeType.." "..self.mode.." Player Added to queue"] = function(data)
-            print(data.playerObject.." added to the queue!")
-            local newPlayerQueue = playerQueueClass.new(data.playerObject, data.skillRating, self)
-            self.playersInQueue[data.playerObject] = newPlayerQueue
-        if(game.Players:FindFirstChild(data.playerObject)) then 
-            data.playerObject = game.Players:FindFirstChild(data.playerObject)
-            newPlayerQueue:HandlePlayerQueue()
-            print("Publishing data received")
-            end
-        end
-    end)
-    ]]
     if(not success) then 
         print(errorMessage)
     end
@@ -81,13 +61,12 @@ function playlistClass:AddPlayerToQueue(playerObject)
         local playerSaves = playerStore:Get()
         local data =
         {
-            Topic = self.modeType.." "..self.mode.." Player Added to queue";
+            Topic = self.addedToQueueTopic;
             playerObject = playerObject.Name;
             skillRating = playerSaves["Skill Rating"]
         }
-        print("Publishing data!")
+        servermessagingManager:PublishData(data)
         --MessagingService:PublishAsync("Server Message", data)
-        print("Data published!")
         --self.playersInQueue[playerObject] = newPlayerQueue 
         --newPlayerQueue:HandlePlayerQueue()
     end
