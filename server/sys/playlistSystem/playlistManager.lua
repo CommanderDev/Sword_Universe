@@ -37,10 +37,10 @@ function CreatePlaylistClasses()
     local extras = playlistClasses["Extras"]
 
     ---[[ Rules for each mode ]]---
-    local oneRules: rulesData.rules = {mode = "1v1", minimumPlayers = 1, maximumPlayers = 1, modeType = "Casual"}
-    local twoRules: rulesData.rules = {mode = "2v2", minimumPlayers = 2, maximumPlayers = 2, modeType = "Casual"}
-    local threeRules: rulesData.rules = {mode = "3v3", minimumPlayers = 3, maximumPlayers = 3, modeType = "Casual"}
-    local fourRules: rulesData.rules = {mode = "4v4", minimumPlayers = 4, maximumPlayers = 4, modeType = "Casual"}
+    local oneRules: rulesData.rules = {mode = "1v1", minimumPlayers = 2, maximumPlayers = 2, modeType = "Casual"}
+    local twoRules: rulesData.rules = {mode = "2v2", minimumPlayers = 4, maximumPlayers = 4, modeType = "Casual"}
+    local threeRules: rulesData.rules = {mode = "3v3", minimumPlayers = 6, maximumPlayers = 6, modeType = "Casual"}
+    local fourRules: rulesData.rules = {mode = "4v4", minimumPlayers = 8, maximumPlayers = 8, modeType = "Casual"}
 
     casual["1v1"] = playlistClass.new(oneRules)
     casual["2v2"] = playlistClass.new(twoRules)
