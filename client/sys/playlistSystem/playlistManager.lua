@@ -10,6 +10,8 @@ local playscreenFrame = mainUI:WaitForChild("playscreenFrame")
 
 ---[[ Lower Tabs Frame ]]---
 local lowerTabsFrame = playscreenFrame:WaitForChild("lowerTabsFrame")
+local findmatchButton = lowerTabsFrame:WaitForChild("findmatchButton")
+
 local uiComponents = game.ReplicatedStorage:WaitForChild("uiComponents")
 local listTemplate = uiComponents:WaitForChild("listTemplate")
 local playlistTemplate = uiComponents:WaitForChild("playlistTemplate")
@@ -57,6 +59,23 @@ function playlistManager:connect()
     playlistsData = _G.network:invokeServer("Get Playlist Data")
     CreatePlaylists("Casual")
     CreatePlaylists("Competitive")
+
+    findmatchButton.MouseButton1Click:Connect(function()
+        local selectedPlaylistSelections = playlistSelections[selectedModeType]
+        local selectedPlaylists = {}
+        local inAPlaylist = false --Determines if a player is in a playlist or not.
+        for index, playlistSelected in next, selectedPlaylistSelections do 
+            if(playlistSelected) then 
+                selectedPlaylists[index] = true 
+                inAPlaylist = true 
+            end
+        end
+        if(inAPlaylist) then  
+            _G.network:fireServer("Queue Player", selectedModeType,selectedPlaylists)
+        else 
+            print("No playlists selected")
+        end
+    end)
 end 
 
 function playlistManager:init()
