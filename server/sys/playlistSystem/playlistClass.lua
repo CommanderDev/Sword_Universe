@@ -20,7 +20,9 @@ function playlistClass.new(playlistRules)
 end 
 
 function playlistClass:AddPlayerToQueue(playerObject)
-    self.playersInQueue[playerObject] = playerQueueClass.new(playerObject, self)
+    local newPlayerQueue = playerQueueClass.new(playerObject, self)
+    self.playersInQueue[playerObject] = newPlayerQueue 
+    newPlayerQueue:HandlePlayerQueue()
 end 
 
 
