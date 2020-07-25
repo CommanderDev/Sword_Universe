@@ -8,20 +8,35 @@ function playerQueueClass.new(playerObject, playlistClass)
     coroutine.wrap(function()
         self.playerObject = playerObject
         self.playlistClass = playlistClass
-        self:HandlePlayerQueue()
+        self.eligiblePlayers = {self} --The players eligible to queue
     end)()
     return self
 end 
 
 function playerQueueClass:SearchForPlayers()
-    print(self.playlistClass.playersInQueue)
+    self.eligiblePlayers = {self}
     for index, playerClass in next, self.playlistClass.playersInQueue do 
-        print(playerClass.playerObject.Name)
+        if(playerClass and playerClass.playerObject ~= self.playerObject) then 
+            table.insert(self.eligiblePlayers, playerClass)
+            if(#self.eligiblePlayers >= self.playlistClass.minimumPlayers) then 
+                for index = 1, self.playlistClass.maximumPlayers do --Loops from the first index found eligible to the maximumPlayers.
+                    local desiredClass = self.eligiblePlayers[index] --Gets player's class
+                    print(desiredClass) 
+                    print(self.playerObject.Name)
+                    if(desiredClass) then 
+                        desiredClass:MatchFound()
+                    end
+                end
+            end
+        end
     end 
 end 
 
+function playerQueueClass:MatchFound()
+    print(self.playerObject.Name.." Found a match")
+end
+
 function playerQueueClass:HandlePlayerQueue()
-    print(self.playerObject.Name.."'s queue is being handled")
     self:SearchForPlayers()
 end
 
