@@ -25,7 +25,6 @@ type playlistType = string
 local playlistSelections = {} --Holds data for which playlists in each tab are selected.
 
 function CreatePlaylists(typeOfPlaylist: playlistType)
-    print(playlistsData)
     local newList = listTemplate:Clone()
     newList.Parent = playscreenFrame 
     newList.Name = typeOfPlaylist
