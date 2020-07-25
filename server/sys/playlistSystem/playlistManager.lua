@@ -101,7 +101,6 @@ function playlistManager:connect()
     _G.network:createEventListener("Queue Player", function(playerObject, modeType, playlistsToQueue)
         for index, value in next, playlistsToQueue do
             local class = playlistClasses[modeType][index]
-            print(class)
             class:AddPlayerToQueue(playerObject)
         end
     end)
