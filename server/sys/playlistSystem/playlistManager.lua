@@ -66,33 +66,6 @@ end
 
 ---[[ Topic Functions]]---
 
-playlistManager.topicFunctions["Set Playlist Data"] = function(playlistData) 
-    print("Setting player data")
-    if(game.JobId == playlistData["Job ID"]) then --Makes sure the server is the one that required the data in the first place.
-         if(not playlistData["Playlist Classes"]) then 
-             print("Creating new classes")
-            CreatePlaylistClasses() 
-         else
-             print("Setting playlist classes to published array")
-            playlistClasses = playlistData["Playlist Classes"]
-        end 
-    end 
-end
-
-playlistManager.topicFunctions["Get Playlist Data"] = function(data)
-    local data = --The data that'll be published to the servers
-    {
-        ["Job ID"] = data.jobId; 
-        ["Playlist Classes"] = nil;
-        Topic = "Set Playlist Data"
-    }
-        if(not isDefaultData) then  --Makes sure the data isn't empty so the server can update to the data all the other servers have
-            data["Playlist Classes"] = playlistClasses
-        end 
-        MessagingService:PublishAsync("Server Message", data)
-     --MessagingService:PublishAsync("Set Playlist Data", data)
-end
-
 function playlistManager:connect() 
     print(servermessagingManager)
     servermessagingManager:SubscribeTopic("Test Topic", function(data)
@@ -106,35 +79,36 @@ function playlistManager:connect()
     }
     servermessagingManager:PublishData(testTopicData)
     local success, errorMessage = pcall(function()
-    MessagingService:SubscribeAsync("Server Message", function(data)
-        data = data.Data
-        playlistManager.topicFunctions[data.Topic](data)
-    end)
-
-    local serverMessage =
-    {
-        Topic = "Get Playlist Data";
-        jobId = game.JobId
-    }
-    MessagingService:PublishAsync("Server Message",serverMessage)
-    --MessagingService:PublishAsync("Server Message", publishData)
-end)
-    --[[MessagingService:SubscribeAsync("Get Playlist Data", function(jobId) --Get the playlist data
-        local data = --The data that'll be published to the servers
+        servermessagingManager:SubscribeTopic("Get Playlist Data", function(playlistData)
+            local data = --The data that'll be published to the servers
+            {
+                ["Job ID"] = playlistData.jobId; 
+                ["Playlist Classes"] = nil;
+                Topic = "Set Playlist Data"
+            }
+            if(not isDefaultData) then  --Makes sure the data isn't empty so the server can update to the data all the other servers have
+                data["Playlist Classes"] = playlistClasses
+            end 
+            servermessagingManager:PublishData(data)
+        end)
+        servermessagingManager:SubscribeTopic("Set Playlist Data", function(playlistData) 
+        print("Setting player data")
+            if(game.JobId == playlistData["Job ID"]) then --Makes sure the server is the one that required the data in the first place.
+                if(not playlistData["Playlist Classes"]) then 
+                    CreatePlaylistClasses() 
+                else
+                    playlistClasses = playlistData["Playlist Classes"]
+                end 
+            end 
+        end)
+        local dataToPublish =
         {
-            ["Job ID"] = jobId.Data; 
-            ["Playlist Classes"] = nil 
+            jobId = game.jobId;
+            Topic = "Get Playlist Data"
         }
-
-        if(not isDefaultData) then  --Makes sure the data isn't empty so the server can update to the data all the other servers have
-            data["Playlist Classes"] = playlistClasses
-        end 
-        MessagingService:PublishAsync("Set Playlist Data", data)
-    end) 
-    
-        MessagingService:PublishAsync("Get Playlist Data", game.JobId)
+        servermessagingManager:PublishData(dataToPublish)
     end)
-    ]]
+
     if(not success) then 
         print(errorMessage)
         CreatePlaylistClasses()
