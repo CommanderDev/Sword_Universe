@@ -67,6 +67,7 @@ end
 ---[[ Topic Functions]]---
 
 function playlistManager:connect() 
+    CreatePlaylistClasses()
     local success, errorMessage = pcall(function()
         servermessagingManager:SubscribeTopic("Get Playlist Data", function(playlistData)
             local data = --The data that'll be published to the servers
@@ -100,7 +101,6 @@ function playlistManager:connect()
 
     if(not success) then 
         print(errorMessage)
-        CreatePlaylistClasses()
     end 
 
 
