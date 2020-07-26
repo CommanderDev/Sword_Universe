@@ -35,7 +35,7 @@ function playlistClass:HandleMessaging()
         servermessagingManager:SubscribeTopic(self.matchBegunTopic, function(data)
             local playersInMatch = data["Players In Match"]
             for index, value in next, playersInMatch do 
-                print(value.." successfully joined the match!")
+                print(value.." successfully found a match!")
             end
         end)
 
@@ -43,7 +43,7 @@ function playlistClass:HandleMessaging()
             local playerObject = game.Players.FindFirstChild(data.playerObject)
             print("Match found!")
             if(playerObject and self.playersInMatch[playerObject]) then 
-                print(playerObject)
+                print("MatchFound about to be called!")
                 self.playersInMatch[data.playerObject]:MatchFound()
                 print(playerObject.Name.." Found a match")
             end
