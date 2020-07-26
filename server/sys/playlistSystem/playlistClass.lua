@@ -31,13 +31,24 @@ end
 
 
 function playlistClass:HandleMessaging()
-    local success, errorMessage = pcall(function()
+   -- local success, errorMessage = pcall(function()
         servermessagingManager:SubscribeTopic(self.matchBegunTopic, function(data)
             local playersInMatch = data["Players In Match"]
             for index, value in next, playersInMatch do 
-                print(value.." ssuccessfully joined the match!")
+                print(value.." successfully joined the match!")
             end
         end)
+
+        servermessagingManager:SubscribeTopic("Match Found", function(data) 
+            local playerObject = game.Players.FindFirstChild(data.playerObject)
+            print("Match found!")
+            if(playerObject and self.playersInMatch[playerObject]) then 
+                print(playerObject)
+                self.playersInMatch[data.playerObject]:MatchFound()
+                print(playerObject.Name.." Found a match")
+            end
+        end)
+
         servermessagingManager:SubscribeTopic(self.addedToQueueTopic, function(data)
             print(data.playerObject.." added to the queue!")
             local newPlayerQueue = playerQueueClass.new(data.playerObject, data.skillRating, self)
@@ -48,10 +59,10 @@ function playlistClass:HandleMessaging()
                 print("Publishing data received")
                 end
             end)
-        end)
-    if(not success) then 
-        print(errorMessage)
-    end
+        --end)
+  --  if(not success) then 
+     --   print(errorMessage)
+  --  end
 end 
 
 function playlistClass:AddPlayerToQueue(playerObject)
