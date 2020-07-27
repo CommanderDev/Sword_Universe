@@ -9,7 +9,6 @@ function servermessagingManager:connect()
     MessagingService:SubscribeAsync("Server Message", function(dataPublished)
         local data = dataPublished.Data 
         local topic = data.Topic
-        --print(signals[topic])
         if(signals[topic]) then 
             local success, errorMessage = pcall(signals[topic], data)
             if(not success) then
@@ -22,6 +21,9 @@ function servermessagingManager:PublishData(data)
     local success, errorMessage = pcall(function()
         MessagingService:PublishAsync("Server Message", data)
     end)
+    if(not success) then 
+        print(errorMessage)
+    end
 end 
 
 function servermessagingManager:SubscribeTopic(topic, func)
