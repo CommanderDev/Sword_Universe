@@ -32,20 +32,20 @@ end
 
 function playlistClass:HandleMessaging()
    -- local success, errorMessage = pcall(function()
+
+   servermessagingManager:SubscribeTopic("Match Found", function(data) 
+        print("A player found a match!")
+        local playerObject = game.Players:FindFirstChild(data.playerName)
+        if(playerObject and self.playersInMatch[playerObject]) then 
+            print("MatchFound about to be called!")
+            self.playersInMatch[data.playerName]:MatchFound()
+            print(playerObject.Name.." Found a match")
+        end
+    end)
         servermessagingManager:SubscribeTopic(self.matchBegunTopic, function(data)
             local playersInMatch = data["Players In Match"]
             for index, value in next, playersInMatch do 
-                print(value.." successfully found a match!")
-            end
-        end)
-
-        servermessagingManager:SubscribeTopic("Match Found", function(data) 
-            local playerObject = game.Players.FindFirstChild(data.playerObject)
-            print("Match found!")
-            if(playerObject and self.playersInMatch[playerObject]) then 
-                print("MatchFound about to be called!")
-                self.playersInMatch[data.playerObject]:MatchFound()
-                print(playerObject.Name.." Found a match")
+             --   print(value.." successfully found a match!")
             end
         end)
 
