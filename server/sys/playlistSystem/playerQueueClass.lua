@@ -31,7 +31,6 @@ end
 function playerQueueClass:SearchForPlayers()
     self.eligiblePlayers = {[1] = self}
     local actualPlayers = 0 --Check so it knows they are actual players.
-    print("Searching for a match The skill gap radius is "..self.skillgapRadius)
     local playersInMatch = {} --Only used if a match is found. Makes it so all the players are added to the match array accordingly.
     for index, playerClass in next, self.playlistClass.playersInQueue do
         if(typeof(playerClass) == "table" and playerClass.playerObject) then 
@@ -39,25 +38,21 @@ function playerQueueClass:SearchForPlayers()
                 if(self.skillgapRadius < self.skillRating - playerClass.skillRating and self.skillgapRadius < self.skillRating+playerClass.skillRating) then return end
                     table.insert(self.eligiblePlayers, playerClass)
                     if(#self.eligiblePlayers >= self.playlistClass.minimumPlayers) then --Check so the amount of eligible players has the amount required to have a full match.  
-                        --for index = 1, self.playlistClass.maximumPlayers do --Loops from the first index found eligible to the maximumPlayers.
-                          table.foreachi(self.eligiblePlayers, function(index, desiredClass)
+                        for index, desiredClass in next, self.eligiblePlayers do 
                             local desiredClass = self.eligiblePlayers[index] --Gets the current indexed player's class
-                            print(desiredClass)
                             if(desiredClass and desiredClass.playerObject) then 
                                 local data = 
                                 {
                                     Topic = "Match Found";
-                                    playerName = self.playerObject.Name
+                                    playerName = desiredClass.playerObject
                                 }
-                                servermessagingManager:PublishData(data)
-                                print("Successfully sent message to servers!")
-                                --desiredClass:MatchFound()
-                                table.insert(playersInMatch, self.playerObject.Name)
-                                actualPlayers += 1
-                            end
-                        end)
+                            print(data.playerName)
+                            servermessagingManager:PublishData(data)
+                            table.insert(playersInMatch, desiredClass.playerObject)
+                            actualPlayers += 1
+                        end
                     end
-               -- end
+                end
             end 
         end 
     end
@@ -80,9 +75,6 @@ function playerQueueClass:MatchFound()
 end
 
 function playerQueueClass:HandlePlayerQueue()
-    self.playerObject = game.Players:FindFirstChild(self.playerObject)
-    self.playerStore = DataStore2("PlayerStore", self.playerObject)
-    self.playerSaves = self.playerStore:Get()
     coroutine.wrap(function()
         if(self.foundMatch) then 
             print(self.playerObject.Name.." found a match!")
@@ -102,6 +94,9 @@ function playerQueueClass:HandlePlayerQueue()
 
     coroutine.wrap(function()
         while wait(5) do 
+            if(self.foundMatch) then 
+                break
+            end
             print("upping the skill gap!")
             if(self.foundMatch or self.skillgapRadius + matchmakingData["GapPerLoop"] > matchmakingData["maximumSkillGap"]) then break end 
             self.skillgapRadius += matchmakingData["GapPerLoop"]
